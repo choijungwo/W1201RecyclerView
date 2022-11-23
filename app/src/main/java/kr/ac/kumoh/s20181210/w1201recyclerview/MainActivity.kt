@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,15 +15,35 @@ import kr.ac.kumoh.s20181210.w1201recyclerview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private val model: ListViewModel by viewModels()
+
+    private val songAdapter = SongAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.list.layoutManager = LinearLayoutManager(this)
+        model.getList().observe(this,Observer<ArrayList<String>>{
+            songAdapter.notifyDataSetChanged()
+        })
+
+        for (i in 1..3) {
+            model.add("사랑에 연습이 있었다면")
+        }
+
+        binding.list.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            itemAnimator = DefaultItemAnimator()
+            setHasFixedSize(true)
+            adapter = songAdapter
+        }
+
+        /*binding.list.layoutManager = LinearLayoutManager(this)
         binding.list.itemAnimator = DefaultItemAnimator()
         binding.list.setHasFixedSize(true)
-        binding.list.adapter = SongAdapter()
+        binding.list.adapter = SongAdapter()*/
 
     }
 
@@ -36,10 +58,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.txSong.text = "사랑에 연습이 있었다면"
+            holder.txSong.text = model.getSong(position)
         }
 
-        override fun getItemCount() = 30
+        override fun getItemCount() = model.getSize()
 
 
     }
