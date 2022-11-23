@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,10 +24,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        model.list.observe(this,Observer<ArrayList<String>>{
+        model.list.observe(this){
 //            songAdapter.notifyDataSetChanged()
               songAdapter.notifyItemRangeChanged(0, model.list.value?.size ?: 0)
-        })
+        }
 
         for (i in 1..3) {
             model.add("버즈 : 가시")
