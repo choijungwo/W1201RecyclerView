@@ -25,13 +25,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        model.getList().observe(this,Observer<ArrayList<String>>{
-            songAdapter.notifyDataSetChanged()
+        model.list.observe(this,Observer<ArrayList<String>>{
+//            songAdapter.notifyDataSetChanged()
+              songAdapter.notifyItemRangeChanged(0, model.list.value?.size ?: 0)
         })
 
         for (i in 1..3) {
-            model.add("사랑에 연습이 있었다면")
+            model.add("버즈 : 가시")
         }
+        model.add("하현후 : Don't cry")
 
         binding.list.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -58,10 +60,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.txSong.text = model.getSong(position)
+            holder.txSong.text = model.list.value?.get(position) ?: ""
         }
 
-        override fun getItemCount() = model.getSize()
+        override fun getItemCount() = model.list.value?.size ?: 0
 
 
     }
